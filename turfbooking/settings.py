@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,14 +82,25 @@ WSGI_APPLICATION = 'turfbooking.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-DATABASES={
+# DATABASES={
+#     'default': {
+#         'ENGINE':'django.db.backends.postgresql_psycopg2',
+#         'NAME':'turfbooking',
+#         'USER':'postgres',
+#         'PASSWORD':'swathisekar',
+#         'HOST':'localhost',
+#         'PORT':'5432',
+#     }
+# }
+
+DATABASES = {
     'default': {
-        'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME':'turfbooking',
-        'USER':'postgres',
-        'PASSWORD':'swathisekar',
-        'HOST':'localhost',
-        'PORT':'5432',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -143,3 +157,8 @@ MAILERS = {
 LOGIN_URL='login'
 LOGIN_REDIRECT_URL='home'
 LOGOUT_REDIRECT_URL='login'
+
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+ALLOWED_HOSTS = ['*']
