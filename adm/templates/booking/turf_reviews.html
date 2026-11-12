@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reviews | TurfBooking</title>
+
+    <link rel="stylesheet" href="{% static 'booking/css/style.css' %}">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="logo">
+        Turf<span>Booking</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'my_bookings' %}">My Bookings</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="reviews-page">
+
+    <div class="review-heading">
+        <h1>{{ turf.name }} - Reviews</h1>
+        <p>Share your experience with this turf</p>
+    </div>
+
+    <div class="review-summary">
+
+        <h2>Customer Ratings</h2>
+
+        <div class="average-rating">
+            {% if average_rating %}
+                {{ average_rating|floatformat:1 }} / 5
+            {% else %}
+                No ratings yet
+            {% endif %}
+        </div>
+
+        <p>{{ reviews|length }} Reviews</p>
+
+    </div>
+
+    {% if user.is_authenticated %}
+
+        <div class="review-form-card">
+
+            <h2>Write a Review</h2>
+            <p>How was your experience?</p>
+
+            {% if error %}
+                <p class="review-error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label>Your Rating</label>
+
+                <div class="rating-options">
+                    {% for value in "54321" %}
+                        <label class="rating-option">
+                            <input
+                                type="radio"
+                                name="rating"
+                                value="{{ value }}"
+                                required
+                            >
+                            <span>★</span>
+                        </label>
+                    {% endfor %}
+                </div>
+
+                <label for="comment">Your Review</label>
+
+                <textarea
+                    name="comment"
+                    id="comment"
+                    placeholder="Write your experience here..."
+                    maxlength="500"
+                    required
+                ></textarea>
+
+                <button type="submit" class="submit-review-btn">
+                    Submit Review
+                </button>
+
+            </form>
+
+        </div>
+
+    {% else %}
+
+        <div class="review-form-card">
+            <h2>Want to write a review?</h2>
+            <p>Please login to share your experience.</p>
+
+            <a href="{% url 'login' %}" class="submit-review-btn">
+                Login to Review
+            </a>
+        </div>
+
+    {% endif %}
+
+    <div class="customer-reviews">
+
+        <h2>Customer Reviews</h2>
+
+        {% for review in reviews %}
+
+            <div class="customer-review-card">
+
+                <div class="review-user">
+                    <h3>{{ review.user.username }}</h3>
+
+                    <span>
+                        {{ review.created_at|date:"d M Y" }}
+                    </span>
+                </div>
+
+                <div class="review-stars">
+                    {% for star in "12345"|make_list %}
+                        {% if forloop.counter <= review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <p>{{ review.comment }}</p>
+
+            </div>
+
+        {% empty %}
+
+            <p class="no-reviews">
+                No reviews yet. Be the first to review!
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

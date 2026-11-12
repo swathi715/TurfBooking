@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book Turf | TurfBooking</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'booking/css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="/" class="logo">Turf<span>Booking</span></a>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/#turfs">Turfs</a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'my_bookings' %}">My Bookings</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
+    <!-- BOOKING SECTION -->
+    <section class="turfs-section">
+
+        <p class="section-label">YOUR GAME STARTS HERE</p>
+
+        <h2>Book <span>{{ turf.name }}</span></h2>
+
+        <p class="section-text">
+            Choose your preferred playing date and time.
+        </p>
+
+
+        <!-- TURF DETAILS -->
+<div class="turf-container booking-turf-container">
+
+    <div class="turf-card">
+
+        {% if turf.image %}
+            <div class="turf-image"
+                 style="background-image: url('{{ turf.image.url }}');">
+            </div>
+        {% endif %}
+                <div class="turf-info">
+
+                    <span class="sport">
+                        {{ turf.sport_type|upper }}
+                    </span>
+
+                    <h3>{{ turf.name }}</h3>
+
+                    <p>📍 {{ turf.location }}</p>
+
+                    <div class="price-row">
+                        <p>
+                            ₹{{ turf.price_per_hour }}
+                            <small>/ hour</small>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- DATE SELECTION -->
+        <form method="get" action="" class="booking-form booking-date-form">
+
+            <label for="booking_date">Select Booking Date</label>
+
+            <input
+                type="date"
+                id="booking_date"
+                name="date"
+                min="{{ today }}"
+                value="{{ selected_date }}"
+                required
+            >
+
+            <button type="submit" class="primary-btn">
+                Check Available Slots
+            </button>
+
+        </form>
+
+
+        <!-- TIME SLOTS -->
+        {% if selected_date %}
+
+            <div class="slots-section">
+
+                <h3>Available Time Slots</h3>
+
+                <p>Selected Date: {{ selected_date }}</p>
+
+                <div class="slot-legend">
+                    <span class="legend-available">Available</span>
+                    <span class="legend-booked">Booked</span>
+                </div>
+
+
+                <div class="time-slots">
+
+                    {% if "06:00-07:00" in booked_slots %}
+                        <button type="button" class="slot-btn booked" disabled>
+                            06:00 AM - 07:00 AM
+                            <small>Booked</small>
+                        </button>
+                    {% else %}
+                        <a href="{% url 'confirm_booking' turf.id %}?date={{ selected_date }}&time=06:00-07:00"
+                           class="slot-btn available">
+                            06:00 AM - 07:00 AM
+                            <small>Available</small>
+                        </a>
+                    {% endif %}
+
+
+                    {% if "07:00-08:00" in booked_slots %}
+                        <button type="button" class="slot-btn booked" disabled>
+                            07:00 AM - 08:00 AM
+                            <small>Booked</small>
+                        </button>
+                    {% else %}
+                        <a href="{% url 'confirm_booking' turf.id %}?date={{ selected_date }}&time=07:00-08:00"
+                           class="slot-btn available">
+                            07:00 AM - 08:00 AM
+                            <small>Available</small>
+                        </a>
+                    {% endif %}
+
+
+                    {% if "08:00-09:00" in booked_slots %}
+                        <button type="button" class="slot-btn booked" disabled>
+                            08:00 AM - 09:00 AM
+                            <small>Booked</small>
+                        </button>
+                    {% else %}
+                        <a href="{% url 'confirm_booking' turf.id %}?date={{ selected_date }}&time=08:00-09:00"
+                           class="slot-btn available">
+                            08:00 AM - 09:00 AM
+                            <small>Available</small>
+                        </a>
+                    {% endif %}
+
+
+                    {% if "16:00-17:00" in booked_slots %}
+                        <button type="button" class="slot-btn booked" disabled>
+                            04:00 PM - 05:00 PM
+                            <small>Booked</small>
+                        </button>
+                    {% else %}
+                        <a href="{% url 'confirm_booking' turf.id %}?date={{ selected_date }}&time=16:00-17:00"
+                           class="slot-btn available">
+                            04:00 PM - 05:00 PM
+                            <small>Available</small>
+                        </a>
+                    {% endif %}
+
+
+                    {% if "17:00-18:00" in booked_slots %}
+                        <button type="button" class="slot-btn booked" disabled>
+                            05:00 PM - 06:00 PM
+                            <small>Booked</small>
+                        </button>
+                    {% else %}
+                        <a href="{% url 'confirm_booking' turf.id %}?date={{ selected_date }}&time=17:00-18:00"
+                           class="slot-btn available">
+                            05:00 PM - 06:00 PM
+                            <small>Available</small>
+                        </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <a href="/" class="primary-btn back-home">
+            ← Back to Home
+        </a>
+
+    </section>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | TurfBooking</title>
+    <link rel="stylesheet" href="{% static 'booking/css/style.css' %}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="/" class="logo">Turf<span>Booking</span></a>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="{% url 'my_bookings' %}">My Bookings</a>
+    </div>
+</nav>
+
+<section class="turfs-section">
+
+    <p class="section-label">YOUR BOOKINGS</p>
+    <h2>My <span>Bookings</span></h2>
+
+    <!-- Filters -->
+
+    <select id="bookingStatus"
+        style="padding:12px; margin:10px; border:1px solid #ccc; border-radius:8px;">
+
+        <option value="">All Bookings</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Cancelled">Cancelled</option>
+    </select>
+
+    <input
+        type="text"
+        id="bookingSearch"
+        placeholder="Search turf name..."
+        style="padding:12px; width:100%; max-width:350px;
+        margin:20px 0; border:1px solid #ccc; border-radius:8px;"
+    >
+
+    <input
+        type="date"
+        id="bookingDate"
+        style="padding:12px; margin:10px;
+        border:1px solid #ccc; border-radius:8px;"
+    >
+
+    <!-- Booking Cards -->
+
+    <div class="turf-container my_bookings-container">
+
+        {% for booking in bookings %}
+
+        <div class="turf-card booking-card"
+             data-status="{{ booking.status }}">
+
+            <div class="turf-info">
+
+                <h3>{{ booking.turf.name }}</h3>
+
+                <p>📍 {{ booking.turf.location }}</p>
+
+                <p class="booking-date"
+                   data-date="{{ booking.booking_date|date:'Y-m-d' }}">
+                    📅 {{ booking.booking_date }}
+                </p>
+
+                <p>🕒 {{ booking.time_slot }}</p>
+
+                <p>₹{{ booking.turf.price_per_hour }} / hour</p>
+
+                <p>
+                    Status:
+                    <span class="booking-status
+                        {% if booking.status == 'Confirmed' %}
+                            status-confirmed
+                        {% else %}
+                            status-cancelled
+                        {% endif %}">
+                        {{ booking.status }}
+                    </span>
+                </p>
+
+                {% if booking.status == 'Confirmed' %}
+
+                    <!-- Cancel Booking -->
+
+                    <form method="POST"
+                          action="{% url 'cancel_booking' booking.id %}">
+                        {% csrf_token %}
+
+                        <button type="submit" class="primary-btn">
+                            Cancel Booking
+                        </button>
+                    </form>
+
+                    <!-- Write Review -->
+
+                    <a href="{% url 'turf_reviews' booking.turf.id %}"
+                       class="view-reviews-btn">
+                        ★ Write a Review
+                    </a>
+
+                {% else %}
+
+                    <p>Booking Cancelled</p>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+        {% empty %}
+
+            <p>You haven't made any bookings yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <a href="/" class="primary-btn">← Back to Home</a>
+
+</section>
+
+<script>
+
+// Search Filter
+const searchInput = document.getElementById('bookingSearch');
+const dateInput = document.getElementById('bookingDate');
+const statusInput = document.getElementById('bookingStatus');
+
+function filterBookings() {
+
+    const searchText = searchInput.value.toLowerCase();
+    const selectedDate = dateInput.value;
+    const selectedStatus = statusInput.value;
+
+    const cards = document.querySelectorAll('.booking-card');
+
+    cards.forEach(function(card) {
+
+        const turfName = card.querySelector('h3').textContent.toLowerCase();
+
+        const bookingDate = card.querySelector('.booking-date').dataset.date;
+
+        const status = card.dataset.status;
+
+        const matchesSearch = turfName.includes(searchText);
+
+        const matchesDate =
+            !selectedDate || bookingDate === selectedDate;
+
+        const matchesStatus =
+            !selectedStatus || status === selectedStatus;
+
+        card.style.display =
+            matchesSearch && matchesDate && matchesStatus ? '' : 'none';
+
+    });
+}
+
+searchInput.addEventListener('input', filterBookings);
+dateInput.addEventListener('change', filterBookings);
+statusInput.addEventListener('change', filterBookings);
+
+</script>
+
+</body>
+</html>

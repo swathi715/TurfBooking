@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TurfBooking | Play More</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'booking/css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <a href="/" class="logo">
+            Turf<span>Booking</span>
+        </a>
+
+        <div class="nav-links">
+
+            <a href="/">Home</a>
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'my_bookings' %}">My Bookings</a>
+
+                <span>Hi, {{ user.username }}</span>
+
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="primary-btn">
+                        Logout
+                    </button>
+                </form>
+
+            {% else %}
+
+                <a href="{% url 'login' %}">Login</a>
+
+                <a href="{% url 'register' %}" class="primary-btn">
+                    Register
+                </a>
+
+            {% endif %}
+<a href="{% url 'edit_profile' %}">Edit Profile</a>
+        </div>
+    </nav>
+
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <p class="tagline">YOUR GAME. YOUR GROUND.</p>
+
+            <h1>
+                Find Your Turf.<br>
+                <span>Play Your Best.</span>
+            </h1>
+
+            <p class="hero-text">
+                Discover the best sports turfs near you.
+                Book your favourite ground and get ready to play.
+            </p>
+
+            <a href="#turfs" class="primary-btn">
+                Explore Turfs →
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- POPULAR TURFS SECTION -->
+    <section class="turfs-section" id="turfs">
+
+        <p class="section-label">FIND YOUR GAME</p>
+
+        <h2>Popular <span>Turfs</span></h2>
+
+        <p class="section-text">
+            Choose your ground and book your perfect playing time.
+        </p>
+
+
+        <div class="turf-container">
+
+            {% for turf in turfs %}
+
+                <div class="turf-card">
+
+                    {% if turf.image %}
+
+                        <div class="turf-image"
+                             style="background-image: url('{{ turf.image.url }}');">
+                        </div>
+
+                    {% else %}
+
+                        <div class="turf-image turf-one"></div>
+
+                    {% endif %}
+
+
+                    <div class="turf-info">
+
+                        <span class="sport">
+                            {{ turf.sport_type|upper }}
+                        </span>
+
+                        <h3>{{ turf.name }}</h3>
+
+                        <p>📍 {{ turf.location }}</p>
+
+
+                        <div class="price-row">
+
+                            <p>
+                                ₹{{ turf.price_per_hour }}
+                                <small>/ hour</small>
+                            </p>
+
+                            <a href="{% url 'turf_details' turf.id %}"
+                               class="book-btn">
+                                View Details
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <p>No turfs available right now.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- ABOUT SECTION -->
+    <section class="about-section" id="about">
+
+        <h2>
+            Play More. <span>Worry Less.</span>
+        </h2>
+
+        <p>
+            Find available grounds, choose your time slot,
+            and manage all your turf bookings in one place.
+        </p>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer id="contact">
+
+        <a href="/" class="logo">
+            Turf<span>Booking</span>
+        </a>
+
+        <p>Find your ground. Enjoy your game.</p>
+
+        <p class="copyright">
+            © 2026 TurfBooking. All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Successful | TurfBooking</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'booking/css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">Turf<span>Booking</span></a>
+    </nav>
+
+    <section class="turfs-section">
+        <p class="section-label">BOOKING CONFIRMED</p>
+        <h2>Booking <span>Successful!</span></h2>
+        <p class="section-text">
+            Your turf booking has been saved successfully.
+        </p>
+
+        <div class="turf-container">
+            <div class="turf-card">
+                <div class="turf-info">
+                    <p>Booking ID: #{{ booking.id }}</p>
+                    <h3>{{ booking.turf.name }}</h3>
+                    <p>📍 {{ booking.turf.location }}</p>
+                    <p>Sport: {{ booking.turf.sport_type }}</p>
+                    <p>📅 Date: {{ booking.booking_date }}</p>
+                    <p>🕒 Time: {{ booking.time_slot }}</p>
+                    <h3>₹{{ booking.turf.price_per_hour }} / hour</h3>
+                </div>
+            </div>
+        </div>
+
+        <a href="/" class="primary-btn">Back to Home</a>
+        <a href="{% url 'my_bookings' %}" class="primary-btn">
+            My Bookings
+        </a>
+    </section>
+
+</body>
+</html>

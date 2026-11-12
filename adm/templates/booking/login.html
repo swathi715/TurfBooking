@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | TurfBooking</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'booking/css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="logo">Turf<span>Booking</span></a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="{% url 'register' %}">Register</a>
+        </div>
+    </nav>
+
+    <section class="turfs-section">
+        <p class="section-label">WELCOME BACK</p>
+        <h2>Login to <span>Your Account</span></h2>
+
+        <form method="POST" class="turf-card"
+              style="max-width: 420px; margin: 30px auto; padding: 30px;">
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <p class="error-message">
+                    Invalid username or password. Please try again.
+                </p>
+            {% endif %}
+
+            <label for="id_username">Username</label>
+            {{ form.username }}
+
+            <br><br>
+
+            <label for="id_password">Password</label>
+            {{ form.password }}
+
+            <br><br>
+
+            <button type="submit" class="primary-btn">
+                Login
+            </button>
+
+            <p style="margin-top: 20px;">
+                Don't have an account?
+                <a href="{% url 'register' %}">Register here</a>
+            </p>
+        </form>
+    </section>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | TurfBooking</title>
+    <link rel="stylesheet" href="{% static 'booking/css/style.css' %}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="/" class="logo">Turf<span>Booking</span></a>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="{% url 'my_bookings' %}">My Bookings</a>
+    </div>
+</nav>
+
+<div class="edit-profile-container">
+
+    <div class="edit-profile-card">
+
+        <h2>Edit Profile</h2>
+        <p>Update your personal information</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="profile-form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+
+                    {% for error in field.errors %}
+                        <small class="form-error">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="profile-form-actions">
+                <button type="submit" class="save-profile-btn">
+                    Save Changes
+                </button>
+
+                <a href="/" class="cancel-profile-btn">
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
